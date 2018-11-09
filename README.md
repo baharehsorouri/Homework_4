@@ -29,6 +29,7 @@ module load jje/kent/2014.02.19
 1. Total number of nucleotides
 2. Total number of Ns
 3. Total number of sequences
+
 Because the calculations will be for two genome partitions, there will be **6 total responses**.
 
 ```sh
@@ -40,6 +41,7 @@ Hint: bioawk has a function called gc(). Don't forget about the CDF plotting uti
     Sequence length distribution
     Sequence GC% distribution
     Cumulative genome size sorted from largest to smallest sequences
+
 Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
 ```sh
