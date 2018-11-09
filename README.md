@@ -8,8 +8,14 @@ We will be revisiting the Drosophila melanogaster genome. As with Homework 3, st
 Hint: The partitioning can be accomplished in many different ways. In my opinion, the easiest way is by using bioawk and faSize. The bioawk tool can be found in the module jje/jjeutils and the fa* utilities can be found in the module jje/kent.
 
 ```sh
-$ wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.24.fasta.gz                         
-$ wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gff/dmel-all-r6.24.gff.gz
+qrsh
+cd /pub/jje/ee282/${USER}
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.24.fasta.gz                         
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gff/dmel-all-r6.24.gff.gz
+
+# download bioawk and faSize
+module load jje/jjeutils/0.1a
+module load jje/kent/2014.02.19
 ```
 
 
