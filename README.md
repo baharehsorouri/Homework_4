@@ -10,8 +10,14 @@ Hint: The partitioning can be accomplished in many different ways. In my opinion
 ```sh
 qrsh
 cd /pub/jje/ee282/${USER}
+mkdir hmwk4
+cd hmwk4
 wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.24.fasta.gz                         
 wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gff/dmel-all-r6.24.gff.gz
+
+# Unzip
+ls 
+gunzip *.gz
 
 # download bioawk and faSize
 module load jje/jjeutils/0.1a
@@ -19,17 +25,24 @@ module load jje/kent/2014.02.19
 ```
 
 
-Calculate the following for all sequences ≤ 100kb and all sequences > 100kb:
-Total number of nucleotides
-Total number of Ns
-Total number of sequences
-Because the calculations will be for two genome partitions, there will be 6 total responses.
+### Calculate the following for all sequences ≤ 100kb and all sequences > 100kb:
+1. Total number of nucleotides
+2. Total number of Ns
+3. Total number of sequences
+Because the calculations will be for two genome partitions, there will be **6 total responses**.
+
+```sh
+
+```
 
 Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
 Hint: bioawk has a function called gc(). Don't forget about the CDF plotting utility we used in class.
     Sequence length distribution
     Sequence GC% distribution
     Cumulative genome size sorted from largest to smallest sequences
-Because the calculations will be for the whole genome and two genome partitions, there will be 9 total plots.
+Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
+```sh
+
+```
 ## Genome Assembly
