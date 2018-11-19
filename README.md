@@ -32,8 +32,22 @@ module load jje/kent/2014.02.19
 
 Because the calculations will be for two genome partitions, there will be **6 total responses**.
 
+1. Total number of nucleotides
 ```sh
+ls
+# Need to first partition the genomes to ≤ 100kb and > 100kb
+# First for > 100kb
+bioawk -c fastx 'length($seq) > 100{ print ">"$name; print $seq }'  *.fasta \
+| bioawk -c fastx '{ print $name, length($seq) }' *.fasta
 
+# Total number of nucleotides
+bioawk -c fastx '{ print $name, length($seq) }' *.fasta
+
+# For ≤ 100kb
+bioawk -c fastx 'length($seq) ≤ 100{ print ">"$name; print $seq }'  *.fasta \
+| bioawk -c fastx '{ print $name, length($seq) }' *.fasta
+
+# there isn't a diference between the above 3 methods... why?
 ```
 
 Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
