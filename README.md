@@ -35,21 +35,39 @@ Because the calculations will be for two genome partitions, there will be **6 to
 1. Total number of nucleotides
 ```sh
 ls
+
 # Need to first partition the genomes to ≤ 100kb and > 100kb
-# First for > 100kb
-bioawk -c fastx 'length($seq) > 100{ print ">"$name; print $seq }'  *.fasta \
-| bioawk -c fastx '{ print $name, length($seq) }' *.fasta
+# First for ≤ 100kb
+
+faFilter -maxSize=100000 dmel-all-chromosome-r6.24.fasta \
+> faSize dmel_less.fasta
+ls
 
 # Total number of nucleotides
-bioawk -c fastx '{ print $name, length($seq) }' *.fasta
 
-# For ≤ 100kb
-bioawk -c fastx 'length($seq) ≤ 100{ print ">"$name; print $seq }'  *.fasta \
-| bioawk -c fastx '{ print $name, length($seq) }' *.fasta
+bioawk -c fastx '{ print $name, length($seq) }' dmel_less.fasta
+# For > 100kb
 
-# there isn't a diference between the above 3 methods... why?
+faFilter -minSize=100001 dmel-all-chromosome-r6.24.fasta \
+> faSize dmel_more.fasta
+
+bioawk -c fastx '{ print $name, length($seq) }' dmel_more.fasta
+
+## Trying another way (will only use faSize version for remaining homework):
+# ≤ 100kb
+bioawk -c fastx 'length($seq) <= 100000{ print ">"$name; print $seq }'  *.fasta >sample_less 
+bioawk -c fastx '{ print $name, length($seq) }' sample_less
+
+# > 100kb
+bioawk -c fastx 'length($seq) > 100000{ print ">"$name; print $seq }'  *.fasta >sample_more
+bioawk -c fastx '{ print $name, length($seq) }' sample_more
+
+
 ```
+2. Total number of Ns
+```sh
 
+```
 Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
 Hint: bioawk has a function called gc(). Don't forget about the CDF plotting utility we used in class.
     Sequence length distribution
