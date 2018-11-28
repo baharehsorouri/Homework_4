@@ -41,33 +41,48 @@ ls
 
 faFilter -maxSize=100000 dmel-all-chromosome-r6.24.fasta \
 > faSize dmel_less.fasta
-ls
 
-# Total number of nucleotides
-
-bioawk -c fastx '{ print $name, length($seq) }' dmel_less.fasta
 # For > 100kb
 
 faFilter -minSize=100001 dmel-all-chromosome-r6.24.fasta \
 > faSize dmel_more.fasta
+ls
 
-bioawk -c fastx '{ print $name, length($seq) }' dmel_more.fasta
 
-## Trying another way (will only use faSize version for remaining homework):
+## Trying another way for partition (will only use faSize partition version for remaining homework):
 # ≤ 100kb
-bioawk -c fastx 'length($seq) <= 100000{ print ">"$name; print $seq }'  *.fasta >sample_less 
-bioawk -c fastx '{ print $name, length($seq) }' sample_less
+bioawk -c fastx 'length($seq) <= 100000{ print ">"$name; print $seq }'  *.fasta \
+> sample_less 
 
 # > 100kb
-bioawk -c fastx 'length($seq) > 100000{ print ">"$name; print $seq }'  *.fasta >sample_more
-bioawk -c fastx '{ print $name, length($seq) }' sample_more
+bioawk -c fastx 'length($seq) > 100000{ print ">"$name; print $seq }'  *.fasta \
+> sample_more
 
+# To calculate total nucleotides, Ns, and sequences
+faSize dmel_less.fasta
+faSize dmel_more.fasta
+
+# Another way to solve for total number of nucleotides
+
+bioawk -c fastx '{ print $name, length($seq) }' dmel_less.fasta
+bioawk -c fastx '{ print $name, length($seq) }' dmel_more.fasta
+
+# Another way to solve for total number of Ns
+bioawk -t -c fastx 'END {print NR}' dmel_less.fasta
+bioawk -t -c fastx 'END {print NR}' dmel_more.fasta
 
 ```
-2. Total number of Ns
-```sh
+**For ≤ 100 kb**
+1. Total nucleotides: 6178042
+2. Total Ns: 662593
+3. Total sequences: 1863
 
-```
+**For > 100 kb**
+1. Total nucleotides: 137547960
+2. Total Ns: 490385
+3. Total sequences: 7
+
+
 Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
 Hint: bioawk has a function called gc(). Don't forget about the CDF plotting utility we used in class.
     Sequence length distribution
