@@ -43,7 +43,6 @@ faFilter -maxSize=100000 dmel-all-chromosome-r6.24.fasta \
 > faSize dmel_less.fasta
 
 # For > 100kb
-
 faFilter -minSize=100001 dmel-all-chromosome-r6.24.fasta \
 > faSize dmel_more.fasta
 ls
@@ -52,7 +51,6 @@ ls
 # Trying another way for partition (will only use faSize partition version for remaining homework):
 bioawk -c fastx 'length($seq) <= 100000{ print ">"$name; print $seq }'  *.fasta \
 > sample_less 
-
 bioawk -c fastx 'length($seq) > 100000{ print ">"$name; print $seq }'  *.fasta \
 > sample_more
 
@@ -89,6 +87,15 @@ Hint: bioawk has a function called gc(). Don't forget about the CDF plotting uti
 Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
 ```sh
+# sequence length distribution ## maybe??
+bioawk -c fastx '{ print $name, length($seq) }' input.fasta
+
+# GC% Distribution
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta
+bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta
+
+# Cumulative genome size largest to smallest -rn?
 
 ```
 ## Genome Assembly
