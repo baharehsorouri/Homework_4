@@ -49,12 +49,10 @@ faFilter -minSize=100001 dmel-all-chromosome-r6.24.fasta \
 ls
 
 
-## Trying another way for partition (will only use faSize partition version for remaining homework):
-# ≤ 100kb
+# Trying another way for partition (will only use faSize partition version for remaining homework):
 bioawk -c fastx 'length($seq) <= 100000{ print ">"$name; print $seq }'  *.fasta \
 > sample_less 
 
-# > 100kb
 bioawk -c fastx 'length($seq) > 100000{ print ">"$name; print $seq }'  *.fasta \
 > sample_more
 
@@ -63,7 +61,6 @@ faSize dmel_less.fasta
 faSize dmel_more.fasta
 
 # Another way to solve for total number of nucleotides
-
 bioawk -c fastx '{ print $name, length($seq) }' dmel_less.fasta
 bioawk -c fastx '{ print $name, length($seq) }' dmel_more.fasta
 
@@ -83,7 +80,7 @@ bioawk -t -c fastx 'END {print NR}' dmel_more.fasta
 3. Total sequences: 7
 
 
-Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
+## Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
 Hint: bioawk has a function called gc(). Don't forget about the CDF plotting utility we used in class.
     Sequence length distribution
     Sequence GC% distribution
@@ -95,3 +92,25 @@ Because the calculations will be for the whole genome and two genome partitions,
 
 ```
 ## Genome Assembly
+**Note:** This part of homework 4 is still being arranged. When this note is gone, it should be ready.
+
+# Assemble a genome from MinION reads
+**Hint:** Read up on miniasm here. We're using one of the simplest assembly approaches possible. This assembly can literally be accomplished with three lines of code. This will literally take only 3 command lines.
+Download the reads from here
+Use minimap to overlap reads
+Use miniasm to construct an assembly
+
+```sh
+
+```
+
+## Assembly assessment
+**Hint:** For MUMmer, you should run nucmer, delta-filter, and mummerplot.
+Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the Drosophila community reference's contig N50 (here)
+Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
+Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
+Calculate BUSCO scores of both assemblies and compare them
+
+```sh
+
+```
