@@ -108,8 +108,15 @@ Use minimap to overlap reads
 Use miniasm to construct an assembly
 
 ```sh
-module load jje/jjeutils
+pwd
+mkdir assembly
+cd assembly
+touch assembly.sh
+nano assembly.sh
+# inside the shell script, input this code below
 
+module load jje/jjeutils
+wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz 
 # Trying script from class
 minimap=$(which minimap)
 miniasm=$(which miniasm)
@@ -131,6 +138,14 @@ $minimap -t 32 -Sw5 -L100 -m0 $raw/reads.fq{,} \
 $miniasm -f $raw/reads.fq $processed/onp.paf.gz \
 > $processed/reads.gfa
 
+### exit out of the shell script and save changes
+qsub assembly.sh
+
+# From the link
+ln -s selfSampleData/pacbio_filtered.fastq reads.fq
+
+git clone https://github.com/lh3/minimap2 && (cd minimap2 && make)
+git clone https://github.com/lh3/miniasm  && (cd miniasm  && make)
 
 ```
 
