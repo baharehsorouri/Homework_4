@@ -108,6 +108,29 @@ Use minimap to overlap reads
 Use miniasm to construct an assembly
 
 ```sh
+module load jje/jjeutils
+
+# Trying script from class
+minimap=$(which minimap)
+miniasm=$(which miniasm)
+basedir=/pub/jje/ee282/$USER
+projname=nanopore_assembly
+basedir=$basedir/$projname
+raw=$basedir/$projname/data/raw
+processed=$basedir/$projname/data/processed
+figures=$basedir/$projname/output/figures
+reports=$basedir/$projname/output/reports
+
+createProject $projname $basedir
+ln -sf /bio/share/solarese/hw4/rawdata/iso1_onp_a2_1kb.fastq $raw/reads.fq
+
+$minimap -t 32 -Sw5 -L100 -m0 $raw/reads.fq{,} \
+| gzip -1 \
+> $processed/onp.paf.gz
+
+$miniasm -f $raw/reads.fq $processed/onp.paf.gz \
+> $processed/reads.gfa
+
 
 ```
 
