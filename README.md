@@ -111,17 +111,15 @@ Use miniasm to construct an assembly
 pwd
 mkdir assembly
 cd assembly
-touch assembly.sh
-nano assembly.sh
-# inside the shell script, input this code below
 
+### THIS PART TAKES A RIDICULOUSLY LONG TIME
 module load jje/jjeutils
 wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz 
 # Trying script from class
 minimap=$(which minimap)
 miniasm=$(which miniasm)
 basedir=/pub/jje/ee282/$USER
-projname=nanopore_assembly
+projname=nanopore_assembly1
 basedir=$basedir/$projname
 raw=$basedir/$projname/data/raw
 processed=$basedir/$projname/data/processed
@@ -138,15 +136,17 @@ $minimap -t 32 -Sw5 -L100 -m0 $raw/reads.fq{,} \
 $miniasm -f $raw/reads.fq $processed/onp.paf.gz \
 > $processed/reads.gfa
 
-### exit out of the shell script and save changes
-qsub assembly.sh
+# The part below is for n50
+n50 () {
+  bioawk -c fastx ' { print length($seq); n=n+length($seq); } END { print n; } ' $1 \
+  | sort -rn \
+  | gawk ' NR == 1 { n = $1 }; NR > 1 { ni = $1 + ni; } ni/n > 0.5 { print $1; exit; } '
+}
 
-# From the link
-ln -s selfSampleData/pacbio_filtered.fastq reads.fq
-
-git clone https://github.com/lh3/minimap2 && (cd minimap2 && make)
-git clone https://github.com/lh3/miniasm  && (cd miniasm  && make)
-
+awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
+| tee >(n50 /dev/stdin > $reports/n50.txt) \
+| fold -w 60 \
+> $processed/unitigs.fa
 ```
 
 ## Assembly assessment
