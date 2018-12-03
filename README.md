@@ -136,7 +136,14 @@ $minimap -t 32 -Sw5 -L100 -m0 $raw/reads.fq{,} \
 $miniasm -f $raw/reads.fq $processed/onp.paf.gz \
 > $processed/reads.gfa
 
-# The part below is for n50
+```
+
+## Assembly assessment
+**Hint:** For MUMmer, you should run nucmer, delta-filter, and mummerplot.
+1. Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the Drosophila community reference's contig N50 (here)
+
+```sh
+# For calculating n50
 n50 () {
   bioawk -c fastx ' { print length($seq); n=n+length($seq); } END { print n; } ' $1 \
   | sort -rn \
@@ -147,14 +154,21 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 | tee >(n50 /dev/stdin > $reports/n50.txt) \
 | fold -w 60 \
 > $processed/unitigs.fa
+
+```
+2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
+
+```sh
+
 ```
 
-## Assembly assessment
-**Hint:** For MUMmer, you should run nucmer, delta-filter, and mummerplot.
-Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the Drosophila community reference's contig N50 (here)
-Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
-Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
-Calculate BUSCO scores of both assemblies and compare them
+3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
+
+```sh
+
+```
+
+4. Calculate BUSCO scores of both assemblies and compare them
 
 ```sh
 
