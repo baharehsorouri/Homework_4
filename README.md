@@ -122,7 +122,6 @@ bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta \
 >  gc_dmel_less.lengths
 plotCDF2 gc_dmel_less.lengths gc_less.png
 
-
 bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta \
 | sort -rn \
 | awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
@@ -134,11 +133,11 @@ bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta \
 | awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
 >  gc_dmel_all.lengths
 plotCDF2 gc_dmel_all.lengths gc_all.png
+
 # Cumulative genome size largest to smallest -rn?
 
 ```
 ## Genome Assembly
-**Note:** This part of homework 4 is still being arranged. When this note is gone, it should be ready.
 
 # Assemble a genome from MinION reads
 **Hint:** Read up on miniasm here. We're using one of the simplest assembly approaches possible. This assembly can literally be accomplished with three lines of code. This will literally take only 3 command lines.
@@ -203,17 +202,13 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 module load jje/jjeutils perl
 faSplitByN dmel-all-chromosome-r6.24.fasta dmel-all-chromosome-cntg-r6.24.fasta 10
 
+# Also need to copy unitigs.fa from nanopore_assembly1 to current directory (/pub/jje/ee282/bsorouri/hmwk4)
+ln -s /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processed/unitigs.fa
+ls
+
 # To make the dotplot
 source /pub/jje/ee282/bin/.qmbashrc
 module load gnuplot
-
-## Sample
-mummer -mum -b -c ref.fasta qry.fasta > ref_qry.mums
-mummerplot --postscript --prefix=ref_qry ref_qry.mums
-gnuplot ref_qry.gp
-
-## Trying; Need to be in the right working directory (/pub/jje/ee282/$USER/hmwk4
-mummer -mum -b -c dmel-all-chromosome-cntg-r6.24.fasta  /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processedreads.gfa > ref_qry.mums
 
 ### Trying with edwin
 REF="dmel-all-chromosome-cntg-r6.24.fasta"
@@ -221,6 +216,14 @@ PREFIX="flybase"
 SGE_TASK_ID=1
 QRY=$(ls u*.fa | head -n $SGE_TASK_ID | tail -n 1)
 PREFIX=${PREFIX}_$(basename ${QRY} .fa)
+
+source ../
+
+nucmer -l 100 -c 125 -d 10 -banded -D 5 -prefix ${PREFIX} ${REF} ${QRY}
+
+#### This part isn't working ####
+mummerplot --fat --layout --filter -p ${PREFIX} ${PREFIX}.delta \
+  -R ${REF} -Q ${QRY} --postscript
 
 ```
 
@@ -237,14 +240,13 @@ bioawk -c fastx ' { print length($seq) } ' unitigs.fa \
 | awk ' BEGIN { print "Assembly\tLength\nMinimap_Ctg\t0" } { print "Minimap_Ctg\t" $1 } ' \
 > unitigs.lengths
 
-plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths /dev/stdout \
-| tee r6_v_minimap.png \
-| display 
+plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths r6_v_minimap.png  
 ```
 
 4. Calculate BUSCO scores of both assemblies and compare them
 
 ```sh
+
 # First load BUSCO
 module load augustus/3.2.1
 module load blast/2.2.31 hmmer/3.1b2 boost/1.54.0
@@ -256,12 +258,14 @@ MYLIB="diptera_odb9"
 OPTIONS="-l ${MYLIBDIR}${MYLIB}"
 ##OPTIONS="${OPTIONS} -sp 4577"
 QRY="unitigs.fasta"
-###Please change this based on your qry file. I.e. .fasta or .fa or .gfa
 MYEXT=".fasta" 
 
 #my busco run
 #you can change the value after -c to tell busco how many cores to run on. Here we are using only 1 core.
 BUSCO.py -c 1 -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}${SPTAG} ${OPTIONS}
 
+# Then need to run job through HPC:
+touch busco.sh
+nano busco. sh
 
 ```
