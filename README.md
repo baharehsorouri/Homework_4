@@ -159,6 +159,29 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
 
 ```sh
+# Need to first make a contig assembly
+
+module load jje/jjeutils perl
+faSplitByN dmel-all-chromosome-r6.24.fasta dmel-all-chromosome-cntg-r6.24.fasta 10
+
+# To make the dotplot
+source /pub/jje/ee282/bin/.qmbashrc
+module load gnuplot
+
+## Sample
+mummer -mum -b -c ref.fasta qry.fasta > ref_qry.mums
+mummerplot --postscript --prefix=ref_qry ref_qry.mums
+gnuplot ref_qry.gp
+
+## Trying; Need to be in the right working directory (/pub/jje/ee282/$USER/hmwk4
+mummer -mum -b -c dmel-all-chromosome-cntg-r6.24.fasta  /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processedreads.gfa > ref_qry.mums
+
+### Trying with edwin
+REF="dmel-all-chromosome-r6.24.fasta"
+PREFIX="flybase"
+SGE_TASK_ID=1
+QRY=$(ls pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processed/unitigs.gfa | head -n $SGE_TASK_ID | tail -n 1)
+PREFIX=${PREFIX}_$(basename ${QRY} .fa)
 
 ```
 
@@ -171,5 +194,23 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 4. Calculate BUSCO scores of both assemblies and compare them
 
 ```sh
+# First load BUSCO
+module load augustus/3.2.1
+module load blast/2.2.31 hmmer/3.1b2 boost/1.54.0
+source /pub/jje/ee282/bin/.buscorc
+
+INPUTTYPE="geno"
+MYLIBDIR="/pub/jje/ee282/bin/busco/lineages/"
+MYLIB="diptera_odb9"
+OPTIONS="-l ${MYLIBDIR}${MYLIB}"
+##OPTIONS="${OPTIONS} -sp 4577"
+QRY="unitigs.fasta"
+###Please change this based on your qry file. I.e. .fasta or .fa or .gfa
+MYEXT=".fasta" 
+
+#my busco run
+#you can change the value after -c to tell busco how many cores to run on. Here we are using only 1 core.
+BUSCO.py -c 1 -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}${SPTAG} ${OPTIONS}
+
 
 ```
