@@ -91,15 +91,29 @@ module load perl
 module load jje/jjeutils/0.1a
 module load rstudio/0.99.9.9
 
-# sequence length distribution ## maybe??
-bioawk -c fastx '{ print $name, length($seq) }' dmel_less.fasta > seq_dmel_less.fasta
-plotCDF2 seq_dmel_less.fasta /dev/stdout \
-| tee seq_dmel_less.png
-
+# sequence length distribution 
+# ≤ 100kb
 bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
 | sort -rn \
 | awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
 >  seq_dmel_less.lengths
+plotCDF2 seq_dmel_less.lengths seq_less.png
+
+# > 100kb
+bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
+>  seq_dmel_more.lengths
+plotCDF2 seq_dmel_more.lengths seq_more.png
+
+# whole genome
+bioawk -c fastx ' { print length($seq) } ' dmel-all-chromosome-r6.24.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
+>  seq_dmel_all.lengths
+plotCDF2 seq_dmel_all.lengths seq_all.png
+
+ls -l *.png
 
 # GC% Distribution
 bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta
