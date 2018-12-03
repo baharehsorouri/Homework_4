@@ -116,10 +116,24 @@ plotCDF2 seq_dmel_all.lengths seq_all.png
 ls -l *.png
 
 # GC% Distribution
-bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta
-bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta
-bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
+>  gc_dmel_less.lengths
+plotCDF2 gc_dmel_less.lengths gc_less.png
 
+
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
+>  gc_dmel_more.lengths
+plotCDF2 gc_dmel_more.lengths gc_more.png
+
+bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
+>  gc_dmel_all.lengths
+plotCDF2 gc_dmel_all.lengths gc_all.png
 # Cumulative genome size largest to smallest -rn?
 
 ```
