@@ -87,8 +87,19 @@ Hint: bioawk has a function called gc(). Don't forget about the CDF plotting uti
 Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
 ```sh
+module load perl
+module load jje/jjeutils/0.1a
+module load rstudio/0.99.9.9
+
 # sequence length distribution ## maybe??
-bioawk -c fastx '{ print $name, length($seq) }' input.fasta
+bioawk -c fastx '{ print $name, length($seq) }' dmel_less.fasta > seq_dmel_less.fasta
+plotCDF2 seq_dmel_less.fasta /dev/stdout \
+| tee seq_dmel_less.png
+
+bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
+>  seq_dmel_less.lengths
 
 # GC% Distribution
 bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta
@@ -177,10 +188,10 @@ gnuplot ref_qry.gp
 mummer -mum -b -c dmel-all-chromosome-cntg-r6.24.fasta  /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processedreads.gfa > ref_qry.mums
 
 ### Trying with edwin
-REF="dmel-all-chromosome-r6.24.fasta"
+REF="dmel-all-chromosome-cntg-r6.24.fasta"
 PREFIX="flybase"
 SGE_TASK_ID=1
-QRY=$(ls pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processed/unitigs.gfa | head -n $SGE_TASK_ID | tail -n 1)
+QRY=$(ls u*.fa | head -n $SGE_TASK_ID | tail -n 1)
 PREFIX=${PREFIX}_$(basename ${QRY} .fa)
 
 ```
@@ -188,7 +199,19 @@ PREFIX=${PREFIX}_$(basename ${QRY} .fa)
 3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
 
 ```sh
+bioawk -c fastx ' { print length($seq) } ' dmel-all-chromosome-cntg-r6.24.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nFlyBase_Ctg\t0" } { print "FlyBase_Ctg\t" $1 } ' \
+>  dmel-all-chromosome-cntg-r6.24.lengths
 
+bioawk -c fastx ' { print length($seq) } ' unitigs.fa \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nMinimap_Ctg\t0" } { print "Minimap_Ctg\t" $1 } ' \
+> unitigs.lengths
+
+plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths /dev/stdout \
+| tee r6_v_minimap.png \
+| display 
 ```
 
 4. Calculate BUSCO scores of both assemblies and compare them
