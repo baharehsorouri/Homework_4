@@ -137,9 +137,9 @@ plotCDF2 gc_dmel_all.lengths gc_all.png
 # Cumulative genome size largest to smallest -rn?
 
 ```
-## Genome Assembly
+# Genome Assembly
 
-# Assemble a genome from MinION reads
+## Assemble a genome from MinION reads
 **Hint:** Read up on miniasm here. We're using one of the simplest assembly approaches possible. This assembly can literally be accomplished with three lines of code. This will literally take only 3 command lines.
 Download the reads from here
 Use minimap to overlap reads
@@ -210,14 +210,11 @@ ls
 source /pub/jje/ee282/bin/.qmbashrc
 module load gnuplot
 
-### Trying with edwin
 REF="dmel-all-chromosome-cntg-r6.24.fasta"
 PREFIX="flybase"
 SGE_TASK_ID=1
 QRY=$(ls u*.fa | head -n $SGE_TASK_ID | tail -n 1)
 PREFIX=${PREFIX}_$(basename ${QRY} .fa)
-
-source ../
 
 nucmer -l 100 -c 125 -d 10 -banded -D 5 -prefix ${PREFIX} ${REF} ${QRY}
 
@@ -264,7 +261,7 @@ MYEXT=".fasta"
 #you can change the value after -c to tell busco how many cores to run on. Here we are using only 1 core.
 BUSCO.py -c 1 -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}${SPTAG} ${OPTIONS}
 
-# Then need to run job through HPC:
+# Then need to run job through HPC: ### It is an either or situation.... either do directly or use the 32 node way JJ recommended or submit the job
 touch busco.sh
 nano busco. sh
 
