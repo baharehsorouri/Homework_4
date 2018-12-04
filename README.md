@@ -79,10 +79,11 @@ bioawk -t -c fastx 'END {print NR}' dmel_more.fasta
 
 
 ## Plots of the following for the whole genome, for all sequences ≤ 100kb, and all sequences > 100kb:
-Hint: bioawk has a function called gc(). Don't forget about the CDF plotting utility we used in class.
-    Sequence length distribution
-    Sequence GC% distribution
-    Cumulative genome size sorted from largest to smallest sequences
+
+**Hint:** bioawk has a function called gc(). Don't forget about the CDF plotting utility we used in class.
+1. Sequence length distribution
+2. Sequence GC% distribution
+3. Cumulative genome size sorted from largest to smallest sequences
 
 Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
@@ -243,6 +244,8 @@ plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths r6_v_minimap.png
 4. Calculate BUSCO scores of both assemblies and compare them
 
 ```sh
+# Need to be careful how we log on and off.
+qrsh -q free128, free72i, free56i, free48i, free40i, free32i, free64 -pe openmp 32
 
 # First load BUSCO
 module load augustus/3.2.1
@@ -254,8 +257,8 @@ MYLIBDIR="/pub/jje/ee282/bin/busco/lineages/"
 MYLIB="diptera_odb9"
 OPTIONS="-l ${MYLIBDIR}${MYLIB}"
 ##OPTIONS="${OPTIONS} -sp 4577"
-QRY="unitigs.fasta"
-MYEXT=".fasta" 
+QRY="unitigs.fa"
+MYEXT=".fa" 
 
 #my busco run
 #you can change the value after -c to tell busco how many cores to run on. Here we are using only 1 core.
