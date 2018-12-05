@@ -203,6 +203,41 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 module load jje/jjeutils perl
 faSplitByN dmel-all-chromosome-r6.24.fasta dmel-all-chromosome-cntg-r6.24.fasta 10
 
+# Will do mummer in another folder as a job
+mkdir mummer
+ln -s /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processed/unitigs.fa
+ln -s /pub/jje/ee282/bsorouir/hmwk4/dmell-all-chromosome-cntg-r6.24.fasta
+ls
+touch mummer.sh
+nano mummer.sh # Copy and paste the content below into your shell script, afterwards save and exit out of shell script
+
+#!/bin/bash
+#
+#$ -N busco_final
+#$ -q free128,free72i,free56i,free48i,free40i,free32i,free64
+#$ -pe openmp 8
+#$ -R Y
+
+###Loading of binaries via module load or PATH reassignment
+source /pub/jje/ee282/bin/.qmbashrc
+module load gnuplot
+
+###Query and Reference Assignment. State my prefix for output filenames
+REF="dmel-all-chromosome-cntg-r6.24.fasta"
+PREFIX="flybase"
+SGE_TASK_ID=1
+QRY=$(ls u*.fa | head -n $SGE_TASK_ID | tail -n 1)
+PREFIX=${PREFIX}_$(basename ${QRY} .fa)
+
+###please use a value between 75-150 for -c. The value of 1000 is too strict.
+nucmer -l 100 -c 125 -d 10 -banded -D 5 -prefix ${PREFIX} ${REF} ${QRY}
+mummerplot --fat --layout --filter -p ${PREFIX} ${PREFIX}.delta \
+  -R ${REF} -Q ${QRY} --postscript
+
+
+#### This is after you saved and exited out ######
+
+qsub mummer.sh
 # Also need to copy unitigs.fa from nanopore_assembly1 to current directory (/pub/jje/ee282/bsorouri/hmwk4)
 ln -s /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processed/unitigs.fa
 ls
@@ -267,5 +302,12 @@ BUSCO.py -c 1 -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}$
 # Then need to run job through HPC: ### It is an either or situation.... either do directly or use the 32 node way JJ recommended or submit the job
 touch busco.sh
 nano busco. sh
+
+#!/bin/bash
+#
+#$ -N busco_final
+#$ -q free128,free72i,free56i,free48i,free40i,free32i,free64
+#$ -pe openmp 32
+#$ -R Y
 
 ```
