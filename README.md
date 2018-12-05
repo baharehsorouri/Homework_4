@@ -245,7 +245,7 @@ plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths r6_v_minimap.png
 
 ```sh
 # Need to be careful how we log on and off.
-qrsh -q free128, free72i, free56i, free48i, free40i, free32i, free64 -pe openmp 32
+qrsh -q free128,free72i,free56i,free48i,free40i,free32i,free64 -pe openmp 32
 
 # First load BUSCO
 module load augustus/3.2.1
