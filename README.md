@@ -238,25 +238,6 @@ mummerplot --fat --layout --filter -p ${PREFIX} ${PREFIX}.delta \
 #### This is after you saved and exited out ######
 
 qsub mummer.sh
-# Also need to copy unitigs.fa from nanopore_assembly1 to current directory (/pub/jje/ee282/bsorouri/hmwk4)
-ln -s /pub/jje/ee282/bsorouri/nanopore_assembly1/nanopore_assembly1/data/processed/unitigs.fa
-ls
-
-# To make the dotplot
-source /pub/jje/ee282/bin/.qmbashrc
-module load gnuplot
-
-REF="dmel-all-chromosome-cntg-r6.24.fasta"
-PREFIX="flybase"
-SGE_TASK_ID=1
-QRY=$(ls u*.fa | head -n $SGE_TASK_ID | tail -n 1)
-PREFIX=${PREFIX}_$(basename ${QRY} .fa)
-
-nucmer -l 100 -c 125 -d 10 -banded -D 5 -prefix ${PREFIX} ${REF} ${QRY}
-
-#### This part isn't working ####
-mummerplot --fat --layout --filter -p ${PREFIX} ${PREFIX}.delta \
-  -R ${REF} -Q ${QRY} --postscript
 
 ```
 
@@ -279,10 +260,17 @@ plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths r6_v_minimap.png
 4. Calculate BUSCO scores of both assemblies and compare them
 
 ```sh
-# Need to be careful how we log on and off.
-qrsh -q free128,free72i,free56i,free48i,free40i,free32i,free64 -pe openmp 32
 
-# First load BUSCO
+pwd # make sure you are in hmwk4 directory
+touch busco_final8.sh
+nano busco_final8.sh ##### Input and save the code below
+
+#!/bin/bash
+#
+#$ -N busco8
+#$ -q free128,free72i,free56i,free48i,free40i,free32i,free64
+#$ -pe openmp 8
+#$ -R Y
 module load augustus/3.2.1
 module load blast/2.2.31 hmmer/3.1b2 boost/1.54.0
 source /pub/jje/ee282/bin/.buscorc
@@ -293,21 +281,30 @@ MYLIB="diptera_odb9"
 OPTIONS="-l ${MYLIBDIR}${MYLIB}"
 ##OPTIONS="${OPTIONS} -sp 4577"
 QRY="unitigs.fa"
-MYEXT=".fa" 
+MYEXT=".fa" ###Please change this based on your qry file. I.e. .fasta or .fa or .gfa
 
 #my busco run
-#you can change the value after -c to tell busco how many cores to run on. Here we are using only 1 core.
-BUSCO.py -c 1 -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}${SPTAG} ${OPTIONS}
+##BUSCO.py -c 1 ${NSLOTS} -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}${SPTAG} ${OPTIONS}
+BUSCO.py -f -c 1 -i ${QRY} -m ${INPUTTYPE} -o $(basename ${QRY} ${MYEXT})_${MYLIB}${SPTAG} ${OPTIONS}
 
-# Then need to run job through HPC: ### It is an either or situation.... either do directly or use the 32 node way JJ recommended or submit the job
-touch busco.sh
-nano busco. sh
+################# After Saving And Exiting Out #####################
 
-#!/bin/bash
-#
-#$ -N busco_final
-#$ -q free128,free72i,free56i,free48i,free40i,free32i,free64
-#$ -pe openmp 32
-#$ -R Y
+qsub busco_final8.sh
+# Note: I used 8 nodes, because it was taking forever in the queue. It took longer to complete, but it still got done.
+
+#### Alternative, manual way of running busco:
+# Need to be careful how we log on and off, but can do the above script manually by first putting the code below, then continuing with the remainder of the code:
+qrsh -q free128,free72i,free56i,free48i,free40i,free32i,free64 -pe openmp 32
+
 
 ```
+**BUSCO Score Results:**
+
+INFO    Results:
+INFO    C:0.5%[S:0.5%,D:0.0%],F:1.1%,M:98.4%,n:2799
+INFO    13 Complete BUSCOs (C)
+INFO    13 Complete and single-copy BUSCOs (S)
+INFO    0 Complete and duplicated BUSCOs (D)
+INFO    32 Fragmented BUSCOs (F)
+INFO    2754 Missing BUSCOs (M)
+INFO    2799 Total BUSCO groups searched
