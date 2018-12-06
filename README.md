@@ -13,7 +13,6 @@ cd /pub/jje/ee282/${USER}
 mkdir hmwk4
 cd hmwk4
 wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.24.fasta.gz                         
-wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gff/dmel-all-r6.24.gff.gz
 
 # Unzip
 ls 
@@ -93,6 +92,29 @@ module load jje/jjeutils/0.1a
 module load rstudio/0.99.9.9
 
 # sequence length distribution 
+# > 100kb
+bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
+>  seq_dmel_more_lengths.txt
+
+# GC% Distribution
+
+module load jje/jjeutils/0.1a
+module load rstudio/0.99.9.9
+
+# ≤ 100kb
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta > GC_less.txt
+
+# > 100kb
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta > GC_more.txt
+
+# whole genome 
+bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta > GC_whole.txt
+
+
+
+# Cumulative genome size largest to smallest -rn?
 # ≤ 100kb
 bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
 | sort -rn \
@@ -115,24 +137,6 @@ bioawk -c fastx ' { print length($seq) } ' dmel-all-chromosome-r6.24.fasta \
 plotCDF2 seq_dmel_all.lengths seq_all.png
 
 ls -l *.png
-
-# GC% Distribution
-
-module load jje/jjeutils/0.1a
-module load rstudio/0.99.9.9
-
-# ≤ 100kb
-bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta > GC_less.txt
-
-# > 100kb
-bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta > GC_more.txt
-
-# whole genome 
-bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta > GC_whole.txt
-
-
-
-# Cumulative genome size largest to smallest -rn?
 
 ```
 # Genome Assembly
@@ -191,6 +195,7 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 | fold -w 60 \
 > $processed/unitigs.fa
 
+n50 unitigs.fa # should give you n50 number
 ```
 2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
 
@@ -210,7 +215,7 @@ nano mummer.sh # Copy and paste the content below into your shell script, afterw
 
 #!/bin/bash
 #
-#$ -N busco_final
+#$ -N mummer
 #$ -q free128,free72i,free56i,free48i,free40i,free32i,free64
 #$ -pe openmp 8
 #$ -R Y
