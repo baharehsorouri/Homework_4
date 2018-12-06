@@ -117,23 +117,20 @@ plotCDF2 seq_dmel_all.lengths seq_all.png
 ls -l *.png
 
 # GC% Distribution
-bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta \
-| sort -rn \
-| awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
->  gc_dmel_less.lengths
-plotCDF2 gc_dmel_less.lengths gc_less.png
 
-bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta \
-| sort -rn \
-| awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
->  gc_dmel_more.lengths
-plotCDF2 gc_dmel_more.lengths gc_more.png
+module load jje/jjeutils/0.1a
+module load rstudio/0.99.9.9
 
-bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta \
-| sort -rn \
-| awk ' BEGIN { print "Assembly\tLength\nkgc_Ctg\t0" } { print "kbgc_Ctg\t" $1 } ' \
->  gc_dmel_all.lengths
-plotCDF2 gc_dmel_all.lengths gc_all.png
+# ≤ 100kb
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta > GC_less.txt
+
+# > 100kb
+bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta > GC_more.txt
+
+# whole genome 
+bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta > GC_whole.txt
+
+
 
 # Cumulative genome size largest to smallest -rn?
 
@@ -300,11 +297,11 @@ qrsh -q free128,free72i,free56i,free48i,free40i,free32i,free64 -pe openmp 32
 ```
 **BUSCO Score Results:**
 
-INFO    Results:
-INFO    C:0.5%[S:0.5%,D:0.0%],F:1.1%,M:98.4%,n:2799
-INFO    13 Complete BUSCOs (C)
-INFO    13 Complete and single-copy BUSCOs (S)
-INFO    0 Complete and duplicated BUSCOs (D)
-INFO    32 Fragmented BUSCOs (F)
-INFO    2754 Missing BUSCOs (M)
-INFO    2799 Total BUSCO groups searched
+Results:
+C:0.5%[S:0.5%,D:0.0%],F:1.1%,M:98.4%,n:2799
+13 Complete BUSCOs (C)
+13 Complete and single-copy BUSCOs (S)
+0 Complete and duplicated BUSCOs (D)
+32 Fragmented BUSCOs (F)
+2754 Missing BUSCOs (M)
+2799 Total BUSCO groups searched
