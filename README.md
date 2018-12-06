@@ -298,10 +298,17 @@ qrsh -q free128,free72i,free56i,free48i,free40i,free32i,free64 -pe openmp 32
 **BUSCO Score Results:**
 
 Results:
+
 C:0.5%[S:0.5%,D:0.0%],F:1.1%,M:98.4%,n:2799
+
 13 Complete BUSCOs (C)
+
 13 Complete and single-copy BUSCOs (S)
+
 0 Complete and duplicated BUSCOs (D)
+
 32 Fragmented BUSCOs (F)
+
 2754 Missing BUSCOs (M)
+
 2799 Total BUSCO groups searched
