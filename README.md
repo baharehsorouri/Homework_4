@@ -92,8 +92,15 @@ module load jje/jjeutils/0.1a
 module load rstudio/0.99.9.9
 
 # sequence length distribution 
+bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta > seq_less.txt
+bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta > seq_more.txt
+bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta > seq_whole.txt
+
+# Will essentially have to try the R stuff from the GC distribution with the lengths and I think I should be set.
+
+#### Part below was basically copy pasted, need to check and confirm that everything is correct
 # ≤ 100kb
-bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
+bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
 | sort -rn \
 | awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
 >  seq_dmel_less_lengths.txt
@@ -105,7 +112,7 @@ bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
 >  seq_dmel_more_lengths.txt
 
 # whole genome
-bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
+bioawk -c fastx ' { print length($seq) } ' dmel_whole.fasta \
 | sort -rn \
 | awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
 >  seq_dmel_whole_lengths.txt
