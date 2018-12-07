@@ -86,6 +86,7 @@ bioawk -t -c fastx 'END {print NR}' dmel_more.fasta
 
 Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
+### 1. Sequence Length Distribution
 ```sh
 module load perl
 module load jje/jjeutils/0.1a
@@ -125,44 +126,12 @@ View(leng_whole)
 ggplot(data = leng_whole)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)") 
 ggsave("leng_whole.png")
 
-
 q()
-# Will essentially have to try the R stuff from the GC distribution with the lengths and I think I should be set.
+```
 
-#### Part below was basically copy pasted, need to check and confirm that everything is correct
-# ≤ 100kb
-bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
-| sort -rn \
-| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
->  seq_dmel_less_lengths.txt
+### GC% Distribution
 
-# > 100kb
-bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
-| sort -rn \
-| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
->  seq_dmel_more_lengths.txt
-
-# whole genome
-bioawk -c fastx ' { print length($seq) } ' dmel_whole.fasta \
-| sort -rn \
-| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
->  seq_dmel_whole_lengths.txt
-######## This is where my stuff begins
-
-# ≤ 100kb
-bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta > lengths_less.txt
-
-# > 100kb
-bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta > lengths_more.txt
-
-# whole genome
-bioawk -c fastx ' { print length($seq) } ' dmel_whole.fasta >  lengths_whole.txt
-
-
-
-R
-
-q()
+```sh
 # GC% Distribution
 
 module load jje/jjeutils/0.1a
@@ -206,9 +175,10 @@ ggplot(data = GC_whole)+ geom_bar(mapping = aes(GC_Percentcut)) + labs(title="Wh
 ggsave("GC_whole.png")
 
 q()
+```
 
-
-
+### Cumulative Genome Size Distribution 
+```sh
 # Cumulative genome size largest to smallest
 # ≤ 100kb
 bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
