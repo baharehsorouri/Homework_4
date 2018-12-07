@@ -92,17 +92,33 @@ module load jje/jjeutils/0.1a
 module load rstudio/0.99.9.9
 
 # sequence length distribution 
+# ≤ 100kb
+bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
+>  seq_dmel_less_lengths.txt
+
 # > 100kb
 bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
 | sort -rn \
 | awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
 >  seq_dmel_more_lengths.txt
 
+# whole genome
+bioawk -c fastx ' { print length($seq) } ' dmel_more.fasta \
+| sort -rn \
+| awk ' BEGIN { print "Assembly\tLength\nkblength_Ctg\t0" } { print "kblength_Ctg\t" $1 } ' \
+>  seq_dmel_whole_lengths.txt
+
+R
+
+q()
 # GC% Distribution
 
 module load jje/jjeutils/0.1a
 module load rstudio/0.99.9.9
 
+# Need to first generate GC txt files for all of them before going into R
 # ≤ 100kb
 bioawk -c fastx '{ print $name, gc($seq) }' dmel_less.fasta > GC_less.txt
 
@@ -112,9 +128,25 @@ bioawk -c fastx '{ print $name, gc($seq) }' dmel_more.fasta > GC_more.txt
 # whole genome 
 bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta > GC_whole.txt
 
+R # everything hereafter should be in R
+library(ggplot2)
 
 
-# Cumulative genome size largest to smallest -rn?
+
+
+GC_more <- read.table("GC_more.txt", header = FALSE)
+View(GC_more) # If you are running in X2go, good to look at data and make sure the formatting looks correct
+GC_more$GC_Percentcut <-cut(x=GC_more[,2], breaks = 11)
+View(GC_more)
+library (ggplot2)
+ggplot(data = GC_more)+ geom_bar(mapping = aes(GC_Percentcut)) + labs(title="GC Distribution > 100kb", x="GC Percentage", y="Count (Number of Contigs)") 
+> ggsave("GC_more.png")
+
+
+
+
+
+# Cumulative genome size largest to smallest
 # ≤ 100kb
 bioawk -c fastx ' { print length($seq) } ' dmel_less.fasta \
 | sort -rn \
@@ -195,7 +227,8 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 | fold -w 60 \
 > $processed/unitigs.fa
 
-n50 unitigs.fa # should give you n50 number
+n50 dmell-all-cntg-r6.24.fa # should give you n50 number; In our case it is 21485538, need to first jump ahead to next question to generate the contig assembly
+
 ```
 2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
 
