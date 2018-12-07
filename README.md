@@ -131,18 +131,31 @@ bioawk -c fastx '{ print $name, gc($seq) }' dmel-all-chromosome-r6.24.fasta > GC
 R # everything hereafter should be in R
 library(ggplot2)
 
+# GC for ≤ 100 kb
+GC_less <- read.table("GC_less.txt", header = FALSE)
+View(GC_less) # If you are running in X2go, good to look at data and make sure the formatting looks correct
+GC_less$GC_Percentcut <-cut(x=GC_less[,2], breaks = 11)
+View(GC_less)
+ggplot(data = GC_less)+ geom_bar(mapping = aes(GC_Percentcut)) + labs(title="GC Distribution ≤ 100kb", x="GC Percentage", y="Count (Number of Contigs)") 
+ggsave("GC_less.png")
 
-
-
+# GC for > 100 kb
 GC_more <- read.table("GC_more.txt", header = FALSE)
-View(GC_more) # If you are running in X2go, good to look at data and make sure the formatting looks correct
+View(GC_more)
 GC_more$GC_Percentcut <-cut(x=GC_more[,2], breaks = 11)
 View(GC_more)
-library (ggplot2)
 ggplot(data = GC_more)+ geom_bar(mapping = aes(GC_Percentcut)) + labs(title="GC Distribution > 100kb", x="GC Percentage", y="Count (Number of Contigs)") 
-> ggsave("GC_more.png")
+ggsave("GC_more.png")
 
+# GC for whole genome
+GC_whole <- read.table("GC_whole.txt", header = FALSE)
+View(GC_whole) 
+GC_whole$GC_Percentcut <-cut(x=GC_whole[,2], breaks = 11)
+View(GC_whole)
+ggplot(data = GC_whole)+ geom_bar(mapping = aes(GC_Percentcut)) + labs(title="Whole Genome GC Distribution", x="GC Percentage", y="Count (Number of Contigs)") 
+ggsave("GC_whole.png")
 
+q()
 
 
 
@@ -168,7 +181,7 @@ bioawk -c fastx ' { print length($seq) } ' dmel-all-chromosome-r6.24.fasta \
 >  seq_dmel_all.lengths
 plotCDF2 seq_dmel_all.lengths seq_all.png
 
-ls -l *.png
+ls -l *.png # There should be 9
 
 ```
 # Genome Assembly
