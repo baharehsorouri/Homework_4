@@ -86,7 +86,7 @@ bioawk -t -c fastx 'END {print NR}' dmel_more.fasta
 
 Because the calculations will be for the whole genome and two genome partitions, there will be **9 total plots**.
 
-### 1. Sequence Length Distribution
+### Sequence Length Distribution
 ```sh
 module load perl
 module load jje/jjeutils/0.1a
@@ -112,7 +112,7 @@ ggsave("leng_less.png")
 
 leng_more <- read.table("leng_more.txt", header = FALSE)
 View(leng_more) # If you are running in X2go, good to look at data and make sure the formatting looks correct
-leng_more$seq_Percentcut <-cut(x=leng_more[,1], breaks = 4)
+leng_more$seq_Percentcut <-cut(x=leng_more[,1], breaks = 11)
 View(leng_more)
 ggplot(data = leng_more)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)") 
 ggsave("leng_more.png")
@@ -121,7 +121,7 @@ ggsave("leng_more.png")
 
 leng_whole <- read.table("leng_whole.txt", header = FALSE)
 View(leng_whole) # If you are running in X2go, good to look at data and make sure the formatting looks correct
-leng_whole$seq_Percentcut <-cut(x=leng_less[,1], breaks = 4)
+leng_whole$seq_Percentcut <-cut(x=leng_whole[,1], breaks = 4)
 View(leng_whole)
 ggplot(data = leng_whole)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)") 
 ggsave("leng_whole.png")
@@ -169,7 +169,7 @@ ggsave("GC_more.png")
 # GC for whole genome
 GC_whole <- read.table("GC_whole.txt", header = FALSE)
 View(GC_whole) 
-GC_whole$GC_Percentcut <-cut(x=GC_whole[,2], breaks = 11)
+GC_whole$GC_Percentcut <-cut(x=GC_whole[,2], breaks = 15)
 View(GC_whole)
 ggplot(data = GC_whole)+ geom_bar(mapping = aes(GC_Percentcut)) + labs(title="Whole Genome GC Distribution", x="GC Percentage", y="Count (Number of Contigs)") 
 ggsave("GC_whole.png")
