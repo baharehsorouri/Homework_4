@@ -103,27 +103,24 @@ library(ggplot2)
 # ≤ 100 kb
 leng_less <- read.table("leng_less.txt", header = FALSE)
 View(leng_less) # If you are running in X2go, good to look at data and make sure the formatting looks correct
-leng_less$seq_Percentcut <-cut(x=leng_less[,1], breaks = 4)
-View(leng_less)
-ggplot(data = leng_less)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)") 
+leng_less$seq_Percentcut <-cut(x=leng_less[,1], breaks = 750)
+ggplot(data = leng_less)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)")+ theme_bw()+ theme(axis.text.x = element_text (angle = 90, hjust = 1)) 
 ggsave("leng_less.png")
 
 # > 100 kb
 
 leng_more <- read.table("leng_more.txt", header = FALSE)
 View(leng_more) # If you are running in X2go, good to look at data and make sure the formatting looks correct
-leng_more$seq_Percentcut <-cut(x=leng_more[,1], breaks = 11)
-View(leng_more)
-ggplot(data = leng_more)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)") 
+leng_more$seq_Percentcut <-cut(x=leng_more[,1], breaks = 17)
+ggplot(data = leng_more)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length > 100kb", x="Sequence", y="Count (Number of Contigs)")+ theme_bw()+ theme(axis.text.x = element_text (angle = 90, hjust = 1))  
 ggsave("leng_more.png")
 
 # whole genome
 
 leng_whole <- read.table("leng_whole.txt", header = FALSE)
 View(leng_whole) # If you are running in X2go, good to look at data and make sure the formatting looks correct
-leng_whole$seq_Percentcut <-cut(x=leng_whole[,1], breaks = 4)
-View(leng_whole)
-ggplot(data = leng_whole)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Sequence Length ≤ 100kb", x="Sequence", y="Count (Number of Contigs)") 
+leng_whole$seq_Percentcut <-cut(x=leng_whole[,1], breaks = 100000)
+ggplot(data = leng_whole)+ geom_bar(mapping = aes(seq_Percentcut)) + labs(title="Whole Genome Sequence Length", x="Sequence", y="Count (Number of Contigs)")+ theme_bw()+ theme(axis.text.x = element_text (angle = 90, hjust = 1))  
 ggsave("leng_whole.png")
 
 q()
@@ -288,7 +285,7 @@ nano mummer.sh # Copy and paste the content below into your shell script, afterw
 
 ###Loading of binaries via module load or PATH reassignment
 source /pub/jje/ee282/bin/.qmbashrc
-module load gnuplot
+module load gnuplot/4.6.0
 
 ###Query and Reference Assignment. State my prefix for output filenames
 REF="dmel-all-chromosome-cntg-r6.24.fasta"
@@ -300,7 +297,7 @@ PREFIX=${PREFIX}_$(basename ${QRY} .fa)
 ###please use a value between 75-150 for -c. The value of 1000 is too strict.
 nucmer -l 100 -c 125 -d 10 -banded -D 5 -prefix ${PREFIX} ${REF} ${QRY}
 mummerplot --fat --layout --filter -p ${PREFIX} ${PREFIX}.delta \
-  -R ${REF} -Q ${QRY} --postscript
+  -R ${REF} -Q ${QRY} --png
 
 
 #### This is after you saved and exited out ######
