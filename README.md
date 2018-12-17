@@ -201,6 +201,10 @@ plotCDF2 seq_dmel_all.lengths seq_all.png
 ls -l *.png # There should be 9
 
 ```
+
+### Comments on "Summarize partitions of a genome assembly"
+Looks great from the code side. Please upload 9 output pngs with your homework and include them here in your markdown document.
+
 # Genome Assembly
 
 ## Assemble a genome from MinION reads
