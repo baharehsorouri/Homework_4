@@ -126,12 +126,15 @@ ggsave("leng_whole.png")
 q()
 ```
 ### For ≤ 100 kb
+
 ![leng_less](leng_less.png)
 
 ### For > 100 kb
+
 ![leng_more](leng_more.png)
 
 ### For Whole Genome
+
 ![leng_whole](leng_whole.png)
 
 
@@ -184,6 +187,19 @@ ggsave("GC_whole.png")
 q()
 ```
 
+### For ≤ 100 kb
+
+![GC_less](GC_less.png)
+
+### For > 100 kb
+
+![GC_more](GC_more.png)
+
+### For Whole Genome
+
+![GC_whole](GC_whole.png)
+
+
 
 
 ### Cumulative Genome Size Distribution 
@@ -213,6 +229,21 @@ plotCDF2 seq_dmel_all.lengths seq_all.png
 ls -l *.png # There should be 9
 
 ```
+
+### For ≤ 100 kb
+
+![seq_less](seq_less.png)
+
+### For > 100 kb
+
+![seq_more](seq_more.png)
+
+### For Whole Genome
+
+![seq_all](seq_whole.png)
+
+
+
 
 ### Comments on "Summarize partitions of a genome assembly"
 Looks great from the code side. Please upload 9 output pngs with your homework and include them here in your markdown document.
