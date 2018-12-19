@@ -125,6 +125,16 @@ ggsave("leng_whole.png")
 
 q()
 ```
+### For ≤ 100 kb
+![leng_less](leng_less.png)
+
+### For > 100 kb
+![leng_more](leng_more.png)
+
+### For Whole Genome
+![leng_whole](leng_whole.png)
+
+
 
 ### GC% Distribution
 
@@ -173,6 +183,8 @@ ggsave("GC_whole.png")
 
 q()
 ```
+
+
 
 ### Cumulative Genome Size Distribution 
 ```sh
