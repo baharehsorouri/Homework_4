@@ -307,6 +307,8 @@ awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
 n50 dmell-all-cntg-r6.24.fa # should give you n50 number; In our case it is 21485538, need to first jump ahead to next question to generate the contig assembly
 
 ```
+### this is supposed to be the contig n50 for the minimap assembly you just generated. Please update this.
+
 2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
 
 ```sh
@@ -353,6 +355,8 @@ qsub mummer.sh
 
 ```
 
+### unfortunately you forgot to upload and add the dotplot png file. Please fix this asap.
+
 3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
 
 ```sh
@@ -368,6 +372,8 @@ bioawk -c fastx ' { print length($seq) } ' unitigs.fa \
 
 plotCDF2 {dmel-all-chromosome-cntg-r6.24,unitigs}.lengths r6_v_minimap.png  
 ```
+
+### you also forgot to add the plotCDF2 png file here.
 
 4. Calculate BUSCO scores of both assemblies and compare them
 
